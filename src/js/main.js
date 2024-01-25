@@ -8,6 +8,23 @@ import SimpleLightbox from 'simplelightbox';
 // Додатковий імпорт стилів
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
+let lightbox;
+
+const form = document.querySelector('.form');
+const elementsContainer = document.querySelector('.gallery');
+const loader = document.querySelector('.loader')
+
+
+
+form.addEventListener('submit', handleSubmit);
+
+const BASE_URL = 'https://pixabay.com/api/';
+const API_KEY = '41967229-af64f083e47c21f795887158a';
+const ORIENTATION = 'horizontal';
+const IMAGE_TYPE = 'photo';
+const SAFESEARCH = 'true';
+
+
 function fetchPictures(searchingItem) {
   return fetch(
     `${BASE_URL}?key=${API_KEY}&q=${searchingItem}&orientation=${ORIENTATION}&image_type=${IMAGE_TYPE}&safesearch=${SAFESEARCH}`
@@ -20,29 +37,28 @@ function fetchPictures(searchingItem) {
   });
 }
 
-const form = document.querySelector('.form');
-const elementsContainer = document.querySelector('.gallery');
-
-form.addEventListener('submit', handleSubmit);
-
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '41967229-af64f083e47c21f795887158a';
-const ORIENTATION = 'horizontal';
-const IMAGE_TYPE = 'photo';
-const SAFESEARCH = 'true';
 
 function handleSubmit(event) {
   event.preventDefault();
+  loader.classList.remove('hidden')
 
   const inputValue = event.currentTarget.elements.serching.value;
 
   fetchPictures(inputValue)
     .then(createMarkup)
     .catch(onFetchError)
-    .finally(() => form.reset());
+    .finally(() => {
+      loader.classList.add('hidden')
+      form.reset()
+    });
 }
 
 function createMarkup({ hits }) {
+  const lightbox = new SimpleLightbox('.gallery-item a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+
   if (hits.length === 0) {
     onFetchError();
   } else {
@@ -60,7 +76,24 @@ function createMarkup({ hits }) {
   <a class="gallery-link" href="${largeImageURL}">
   <img class="gallery-image"
   src="${webformatURL}"
-  alt="${tags}" />
+  alt="${tags}" /></a>
+  <container class="details-container">
+  <div class="details">
+ <h3 class="details-title">Likes</h3>
+ <p class="details-text">${likes}</p>
+</div>
+<div class="details">
+ <h3 class="details-title">Views</h3>
+ <p class="details-text">${views}</p>
+</div>
+<div class="details">
+ <h3 class="details-title">Comments</h3>
+ <p class="details-text">${comments}</p>
+</div>
+<div class="details">
+ <h3 class="details-title">Downloads</h3>
+ <p class="details-text">${downloads}</p>
+</div></container>
 
   
 
@@ -68,38 +101,24 @@ function createMarkup({ hits }) {
 </li>`
     );
     //!!!! Oter data form {hits}  !!!!
-    // </a>
-    //   <container class="container details-container">
-    //    <div class="details">
-    //   <p class="details-title">likes</p>
-    //   <p class="details-text">${likes}</p>
-    // </div>
-    // <div class="details">
-    //   <p class="details-title">views</p>
-    //   <p class="details-text">${views}</p>
-    // </div>
-    // <div class="details">
-    //   <p class="details-title">comments</p>
-    //   <p class="details-text">${comments}</p>
-    // </div>
-    // <div class="details">
-    //   <p class="details-title">downloads</p>
-    //   <p class="details-text">${downloads}</p>
-    // </div></container>
+    // 
+
 
     elementsContainer.innerHTML = markup.join('');
-    form.reset();
+    lightbox.refresh();
   }
 
-  const gallery = new SimpleLightbox('.gallery-item a', {
-    captionsData: 'alt',
-    captionDelay: 250,
-  });
+ 
 }
 
 function onFetchError(error) {
-  iziToast.error({
-    message:
-      'Sorry, there are no images matching your search query. Please try again!',
+  console.log(error)
+  iziToast.show({
+       message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          position: 'topRight',
+          backgroundColor: '#EF4040',
+          titleColor: '#FFFFFF',
+          messageColor: '#FFFFFF',
   });
 }

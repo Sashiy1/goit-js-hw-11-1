@@ -88,10 +88,6 @@ ul {
   font-size: 48px;
 }
 
-.iziToast-button-close {
-  color: #00ff00;
-}
-
 form {
   display: flex;
   gap: 4px;
@@ -104,7 +100,6 @@ form {
   } */
 
 input {
-  
   font-size: 16px;
   border-radius: 4px;
   padding-top: 8px;
@@ -127,34 +122,70 @@ button {
   outline: none;
   border: none;
   border-radius: 8px;
-  background-color: #4E75FF;
+  background-color: #4e75ff;
   color: #fff;
   font-size: 16px;
-  letter-spacing: 1.5px; 
+  letter-spacing: 1.5px;
   padding-right: 16px;
   padding-left: 16px;
   cursor: pointer;
 }
 
-
 button:hover,
 button:focus {
   outline: none;
-  background: #6C8CFF;
-  
-  
+  background: #6c8cff;
 }
 
 .container {
   display: flex;
-  justify-content: space-between; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .details-container {
+  display: flex;
   
-
-  padding: 10px;
-  box-sizing: border-box; 
+  justify-content:space-between;
+  text-align: center;
+  border: solid 1px #2a2a2a;
 }
 
 
+
+
+.details-container {
+ 
+  box-sizing: border-box;
+}
+
+
+
+
+
+.loader.hidden {
+  display: none;
+}
+
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid;
+  border-color: #FF3D00 transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  margin-bottom: 32px;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
